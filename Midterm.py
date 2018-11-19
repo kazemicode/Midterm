@@ -36,12 +36,15 @@ def csumb(pic):
 # the photo. Finally, generates a picture of programmatically generated scanlines
 # and blends the two photos together.
 def vhs(pic):
-  # get width and height of photo to csumb-ify
+  # get width and height of photo to vhs-ify
   w, h = getWidth(pic), getHeight(pic)
-  # create scanlines using the height and width dimensions
+  # produce the lofi effect
   lofi(pic)
+  # write the date and time in bottom left corner
   setTimeAndDate(pic)
+  # create scanlines using the height and width dimensions
   overlay = scanlines(pic)
+  # blend picture with scanline overlay
   target = blend(pic, overlay)
   show(target)
   return target
@@ -75,7 +78,7 @@ def setTimeAndDate(pic):
   #Time stamp - relative to source picture
   time_stamp = datetime.datetime.now().strftime("%I:%M %p")
   #Date stamp - relative to time stamp position
-  date_stamp = datetime.datetime.now().strftime("%b.%d,'%y")
+  date_stamp = datetime.datetime.now().strftime("%b %d %Y")
   ds_position = int(y_position + fontsize)
 		
   #Add time and date stamps
@@ -162,7 +165,7 @@ def scanlines(pic):
     if y % 4 ==0:
       addRectFilled(canvas, 0, y, width, rectHeight, black)
   return canvas
-      
+  return pic     
 # Returns the picture given a directory
 def getPic():
   return makePicture(pickAFile())
