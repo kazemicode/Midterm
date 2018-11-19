@@ -7,16 +7,10 @@
 import random
 import datetime
 
+def test():
+  writePict(csumb(getPic()),"/csumbme.jpg") # select any photo and then select otter image
+  writePict(vhs(getPic()),"/vhs.jpg")       # select any photo
 
-# Returns the picture given a directory
-def getPic():
-  return makePicture(pickAFile())
-
-# Writes a picture to a file  
-def writePict(pict,name):
-  file=getMediaPath(name)
-  writePictureTo(pict,file)
-  
 #--------------------------------------------------------------------------------#   
 # CSUMB: 
 # Create a gradient effect on the original photo, from bay blue to valley green 
@@ -53,14 +47,12 @@ def vhs(pic):
   return target
 
   
-# VHS Filter 
-# Adds a vintage VHS effect to an image. Looks lo fi on purpose.
+#lofi: Lighten or darken each pixel based on luminance. Simulates under/overexposure.
 def lofi(pic):
   pixels = getPixels(pic)
   for p in pixels:
     #Desaturate pixels
     setColor(p, makeLighter(getColor(p)))
-    #Lighten or darken each pixel based on luminance. Simulates under/overexposure.
     luminance = (getRed(p) * 0.299 + getGreen(p) * 0.587 + getBlue(p) * 0.114)
 		
     # Darkens pixels with lighter luminance values and lightens pixels with darker luminance values
@@ -171,5 +163,13 @@ def scanlines(pic):
       addRectFilled(canvas, 0, y, width, rectHeight, black)
   return canvas
       
-      
+# Returns the picture given a directory
+def getPic():
+  return makePicture(pickAFile())
+
+# Writes a picture to a file  
+def writePict(pict,name):
+  file=getMediaPath(name)
+  writePictureTo(pict,file)
+       
   
