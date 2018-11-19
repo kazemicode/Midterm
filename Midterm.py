@@ -1,15 +1,4 @@
-# Run the main method
-# change output directory to desired path on your machine
-
-## Output directory
-dir = ""
-
-## main method
-def main():
-  writePict(removeRedEye(getPic(), 322, 995, 385, 465), dir + "/noredeye.jpg")
-  writePict(sepia(getPic()), dir + "/sepia.jpg")
-  writePict(artify(getPic()), dir + "/artify2.jpg")
-  writePict(chromaKey(getPic(), getPic()), dir + "/greenscreen2.png")
+import random
 
 
 # Returns the picture given a directory
@@ -22,34 +11,44 @@ def writePict(pict,name):
   writePictureTo(pict,file)
   
   
-
 def csumb(pic):
   # get width and height of photo to csumb-ify
   w, h = getWidth(pic), getHeight(pic)
   # create a gradient using the height and width dimensions
   gradient = makeEmptyPicture(w, h)
   makeGradient(gradient)
-  #create canvas using the height and width dimensions
-  target = makeEmptyPicture(w, h)
-  for x in range(w):
-    for y in range(h):
-      px = getPixel(target, x, y)
-      pic_px = getPixel(pic, x, y)
-      grad_px = getPixel(gradient, x, y)
-      
-      pic_r, pic_g, pic_b = getRed(pic_px), getGreen(pic_px), getBlue(pic_px)
-      grad_r, grad_g, grad_b =getRed(grad_px), getGreen(grad_px), getBlue(grad_px)
-      r = (pic_r + grad_r) / 2
-      g = (pic_g + grad_g) / 2
-      b = (pic_b + grad_b) / 2
-      setColor(px, makeColor(r,g,b))  
+  # blend picture with gradient
+  target = blend(pic, gradient)
+  # Draw on the otter
   drawOtter(target)      
-  
-  
+  #show(target)
+  return target
+
+def vhs(pic):
+  # get width and height of photo to csumb-ify
+  w, h = getWidth(pic), getHeight(pic)
+  # create scanlines using the height and width dimensions
+  overlay = scanlines(pic)
+  target = blend(pic, overlay)
   show(target)
   return target
   
-
+def blend(pic, pic2):
+   w, h = getWidth(pic), getHeight(pic)
+   target = makeEmptyPicture(w,h)
+   for x in range(w):
+    for y in range(h):
+      px = getPixel(target, x, y)
+      pic_px = getPixel(pic, x, y)
+      pic2_px = getPixel(pic2, x, y)
+      
+      pic_r, pic_g, pic_b = getRed(pic_px), getGreen(pic_px), getBlue(pic_px)
+      pic2_r, pic2_g, pic2_b =getRed(pic2_px), getGreen(pic2_px), getBlue(pic2_px)
+      r = (pic_r + pic2_r) / 2
+      g = (pic_g + pic2_g) / 2
+      b = (pic_b + pic2_b) / 2
+      setColor(px, makeColor(r,g,b))
+   return target 
 
 def makeGradient(canvas):
    widthCanvas = getWidth(canvas) 
@@ -98,7 +97,20 @@ def drawOtter(pic):
       if(getColor(getPixel(otter,x1,y1)) != white):
         setColor(getPixel(pic, x1 + x, y1 + y), getColor(getPixel(otter, x1,y1)))
         
-  
   return pic
-  
+
+# Given a picture, produce a new picture
+# With the same dimensions with scanlines.
+# Return the scanline picture.   
+def scanlines(pic):
+  width = getWidth(pic)
+  height = getHeight(pic)
+  canvas = makeEmptyPicture(width, height)
+  rectHeight = 1
+  for y in range(0, height):
+    if y % 4 ==0:
+      addRectFilled(canvas, 0, y, width, rectHeight, black)
+  return canvas
+      
+      
   
